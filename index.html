@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>JSON Formatter</title>
+        <style>
+
+body {
+            font-family: consolas, sans-serif;
+            padding: 20px;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .highlight-correct {
+            background-color: rgb(239, 253, 242);
+        }
+
+        .highlight-error {
+            background-color: #faeded;
+        }
+    </style>
+    </head>
+
+    <body>
+
+        <h2>Input JSON</h2>
+        <textarea id="jsonInput" rows="40" cols="100"></textarea>
+        <button onclick="formatJSON()">Format JSON</button>
+
+        <h2>Formatted JSON</h2>
+        <pre id="formattedJSON"></pre>
+        <div id="errorDisplay" class="error"></div>
+
+        <script>
+        function formatJSON() {
+            document.getElementById('formattedJSON').textContent = '';
+            const jsonInput = document.getElementById('jsonInput');
+            const errorDisplay = document.getElementById('errorDisplay');
+
+            try {
+                const parsedJSON = JSON.parse(jsonInput.value);
+                const formattedJSON = JSON.stringify(parsedJSON, null, 2);
+                document.getElementById('formattedJSON').textContent = formattedJSON;
+                errorDisplay.textContent = '';
+                jsonInput.classList.remove('highlight-error');
+                
+                navigator.clipboard.writeText(formattedJSON)
+                jsonInput.classList.add('highlight-correct');
+                errorDisplay.textContent = 'Text successfully copied to clipboard!';
+                errorDisplay.classList.remove('error');
+                
+            } catch (error) {
+                console.error('Invalid JSON:', error.message);
+                errorDisplay.textContent = 'Invalid JSON: ' + error.message;
+
+                jsonInput.classList.add('highlight-error');
+                jsonInput.focus();
+                jsonInput.setSelectionRange(error.at - 1, error.at); 
+            }
+        }
+    </script>
+    </body>
+</html>
